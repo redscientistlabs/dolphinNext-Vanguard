@@ -196,6 +196,9 @@ void MenuBar::OnDebugModeToggled(bool enabled)
 
 void MenuBar::OnWriteJitBlockLogDump()
 {
+  // RTC_Hijack: always ignore when corrupting memory
+  static bool ignore = true;
+
   const std::string filename = fmt::format("{}{}.txt", File::GetUserPath(D_DUMPDEBUG_JITBLOCKS_IDX),
                                            SConfig::GetInstance().GetGameID());
   File::IOFile f(filename, "w");
@@ -208,7 +211,10 @@ void MenuBar::OnWriteJitBlockLogDump()
   }
   auto& system = Core::System::GetInstance();
   system.GetJitInterface().JitBlockLogDump(Core::CPUThreadGuard{system}, f.GetHandle());
-  if (static bool ignore = false; ignore == false)
+
+  //RTC_Hijack: remove definition
+  // if (static bool ignore = false; ignore == false)
+  if (ignore == false)
   {
     const int button_pressed = ModalMessageBox::information(
         this, tr("Success"), tr("Wrote to \"%1\".").arg(QString::fromStdString(filename)),

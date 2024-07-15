@@ -139,6 +139,9 @@
 #include "VideoCommon/NetPlayChatUI.h"
 #include "VideoCommon/VideoConfig.h"
 
+#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
+#include "Vanguard/VanguardClientInitializer.h" // RTC_Hijack
+
 #ifdef HAVE_XRANDR
 #include "UICommon/X11Utils.h"
 // This #define within X11/X.h conflicts with our WiimoteSource enum.
@@ -247,6 +250,7 @@ MainWindow::MainWindow(std::unique_ptr<BootParameters> boot_parameters,
 
   InitControllers();
   ConnectHotkeys();
+  VanguardClientInitializer::win = this; // RTC_Hijack
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
   connect(QGuiApplication::styleHints(), &QStyleHints::colorSchemeChanged, this,
@@ -1023,6 +1027,19 @@ void MainWindow::ForceStop()
   Core::Stop(Core::System::GetInstance());
 }
 
+// RTC_Hijack: Custom force stop function
+void MainWindow::ForceStopVanguard()
+{
+  if (!Core::IsRunning(Core::System::GetInstance()))
+  {
+    Core::QueueHostJob([this](Core::System&) { OnStopComplete(); }, true);
+  }
+  else
+  {
+    Core::Stop(Core::System::GetInstance());
+  }
+}
+
 void MainWindow::Reset()
 {
   auto& system = Core::System::GetInstance();
@@ -1086,6 +1103,8 @@ void MainWindow::ScanForSecondDiscAndStartGame(const UICommon::GameFile& game,
 void MainWindow::StartGame(const QString& path, ScanForSecondDisc scan,
                            std::unique_ptr<BootSessionData> boot_session_data)
 {
+  // RTC_Hijack: call Vanguard function
+  CallImportedFunction<void>((char*)"GAMETOLOAD", path.toStdString());
   StartGame(path.toStdString(), scan, std::move(boot_session_data));
 }
 
@@ -1097,11 +1116,15 @@ void MainWindow::StartGame(const std::string& path, ScanForSecondDisc scan,
     std::shared_ptr<const UICommon::GameFile> game = m_game_list->FindGame(path);
     if (game != nullptr)
     {
+      // RTC_Hijack: call Vanguard function
+      CallImportedFunction<void>((char*)"GAMETOLOAD", path);
       ScanForSecondDiscAndStartGame(*game, std::move(boot_session_data));
       return;
     }
   }
 
+  // RTC_Hijack: call Vanguard function
+  CallImportedFunction<void>((char*)"GAMETOLOAD", path);
   StartGame(BootParameters::GenerateFromFile(
       path, boot_session_data ? std::move(*boot_session_data) : BootSessionData()));
 }
@@ -1109,6 +1132,8 @@ void MainWindow::StartGame(const std::string& path, ScanForSecondDisc scan,
 void MainWindow::StartGame(const std::vector<std::string>& paths,
                            std::unique_ptr<BootSessionData> boot_session_data)
 {
+  // RTC_Hijack: call Vanguard function
+  CallImportedFunction<void>((char*)"GAMETOLOAD", paths[0]);
   StartGame(BootParameters::GenerateFromFile(
       paths, boot_session_data ? std::move(*boot_session_data) : BootSessionData()));
 }
@@ -1127,8 +1152,13 @@ void MainWindow::StartGame(std::unique_ptr<BootParameters>&& parameters)
   // If we're running, only start a new game once we've stopped the last.
   if (Core::GetState(Core::System::GetInstance()) != Core::State::Uninitialized)
   {
+    // RTC_Hijack: replace RequestStop with plain old stop
+    ForceStop();
+
+    /*
     if (!RequestStop())
       return;
+    */
 
     // As long as the shutdown isn't complete, we can't boot, so let's boot later
     m_pending_boot = std::move(parameters);

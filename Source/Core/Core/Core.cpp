@@ -96,6 +96,8 @@
 #include "VideoCommon/VideoBackendBase.h"
 #include "VideoCommon/VideoEvents.h"
 
+#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
+
 namespace Core
 {
 static bool s_wants_determinism;
@@ -253,6 +255,9 @@ bool Init(Core::System& system, std::unique_ptr<BootParameters> boot, const Wind
   INFO_LOG_FMT(BOOT, "Starting core = {} mode", system.IsWii() ? "Wii" : "GameCube");
   INFO_LOG_FMT(BOOT, "CPU Thread separate = {}", system.IsDualCoreMode() ? "Yes" : "No");
 
+  // RTC_Hijack: Snag the console mode
+  //VanguardClient::IsWii = system.IsWii();
+
   Host_UpdateMainFrame();  // Disable any menus or buttons at boot
 
   // Manually reactivate the video backend in case a GameINI overrides the video backend setting.
@@ -393,6 +398,9 @@ static void CpuThread(Core::System& system, const std::optional<std::string>& sa
       File::Delete(*savestate_path);
   }
 
+  // RTC_Hijack: call Vanguard function
+  CallImportedFunction<void>((char*)"LOADGAMEDONE", SConfig::GetInstance().GetTitleDescription());
+
   // If s_state is Starting, change it to Running. But if it's already been set to Stopping
   // by the host thread, don't change it.
   State expected = State::Starting;
@@ -428,6 +436,9 @@ static void CpuThread(Core::System& system, const std::optional<std::string>& sa
 #ifdef USE_MEMORYWATCHER
   s_memory_watcher.reset();
 #endif
+
+  // RTC_Hijack: call Vanguard function
+  CallImportedFunction<void>((char*)"GAMECLOSED");
 
   if (exception_handler)
     EMM::UninstallExceptionHandler();
@@ -493,6 +504,14 @@ static void EmuThread(Core::System& system, std::unique_ptr<BootParameters> boot
   Common::SetCurrentThreadName("Emuthread - Starting");
 
   DeclareAsGPUThread();
+
+  // RTC_Hijack: Snag the boot path
+  std::string romPath = "";
+  if (std::holds_alternative<BootParameters::Disc>(boot->parameters))
+    romPath = std::get<BootParameters::Disc>(boot->parameters).path;
+
+  // RTC_Hijack: call Vanguard function
+  CallImportedFunction<void>((char*)"LOADGAMESTART", romPath);
 
   // For a time this acts as the CPU thread...
   DeclareAsCPUThread();
@@ -922,6 +941,10 @@ void UpdateTitle(Core::System& system)
 
 void Shutdown(Core::System& system)
 {
+  // RTC_Hijack: call Vanguard function
+  // Let the RTC shut down anything it needs to shut down gracefully
+  CallImportedFunction<void>((char*)"EMULATORCLOSING");
+
   // During shutdown DXGI expects us to handle some messages on the UI thread.
   // Therefore we can't immediately block and wait for the emu thread to shut
   // down, so we join the emu thread as late as possible when the UI has already

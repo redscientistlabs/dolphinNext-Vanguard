@@ -68,6 +68,8 @@ IPC_HLE_PERIOD: For the Wii Remote this is the call schedule:
 #include "VideoCommon/Fifo.h"
 #include "VideoCommon/PerformanceMetrics.h"
 
+#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
+
 namespace SystemTimers
 {
 // DSP/CPU timeslicing.
@@ -162,6 +164,8 @@ void SystemTimersManager::PatchEngineCallback(Core::System& system, u64 userdata
   // Try to patch mem and run the Action Replay
   if (PatchEngine::ApplyFramePatches(system))
   {
+    // RTC_Hijack: call Vanguard function
+    CallImportedFunction<void>((char*)"CORESTEP");
     next_schedule = vi_interval - cycles_pruned;
     cycles_pruned = 0;
   }

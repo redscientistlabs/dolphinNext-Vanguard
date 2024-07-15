@@ -43,6 +43,8 @@
 #include "UICommon/CommandLineParse.h"
 #include "UICommon/UICommon.h"
 
+#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
+
 static bool QtMsgAlertHandler(const char* caption, const char* text, bool yes_no,
                               Common::MsgType style)
 {
@@ -251,6 +253,10 @@ int main(int argc, char* argv[])
     Settings::Instance().ApplyStyle();
 
     MainWindow win{std::move(boot), static_cast<const char*>(options.get("movie"))};
+
+    // RTC_Hijack: get the emulator directory and call the initialize Vanguard function
+    std::string emuDir = getDirectory();
+    CallImportedFunction<void>((char*)"InitVanguard", emuDir);
 
 #if defined(USE_ANALYTICS) && USE_ANALYTICS
     if (!Config::Get(Config::MAIN_ANALYTICS_PERMISSION_ASKED))

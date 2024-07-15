@@ -82,6 +82,18 @@ public:
 
   bool eventFilter(QObject* object, QEvent* event) override;
   QMenu* createPopupMenu() override;
+  void ForceStopVanguard();  // RTC_Hijack
+  bool m_exit_requested = false; // RTC_Hijack: moved from private
+  // RTC_Hijack: moved from private
+  enum class ScanForSecondDisc
+  {
+    Yes,
+    No,
+  };
+  void StartGame(const std::string& path, ScanForSecondDisc scan,
+                 std::unique_ptr<BootSessionData> boot_session_data = nullptr);
+  void StartGame(const std::vector<std::string>& paths,
+                 std::unique_ptr<BootSessionData> boot_session_data = nullptr);
 
 signals:
   void ReadOnlyModeChanged(bool read_only);
@@ -97,6 +109,7 @@ private:
   // May ask for confirmation. Returns whether or not it actually stopped.
   bool RequestStop();
   void ForceStop();
+
   void Reset();
   void FrameAdvance();
   void StateLoad();
@@ -137,20 +150,26 @@ private:
 
   void InitCoreCallbacks();
 
+  // RTC_Hijack: moved to public
+  /*
   enum class ScanForSecondDisc
   {
     Yes,
     No,
   };
+  */
 
   void ScanForSecondDiscAndStartGame(const UICommon::GameFile& game,
                                      std::unique_ptr<BootSessionData> boot_session_data = nullptr);
   void StartGame(const QString& path, ScanForSecondDisc scan,
                  std::unique_ptr<BootSessionData> boot_session_data = nullptr);
+  // RTC_Hijack: moved to public
+  /*
   void StartGame(const std::string& path, ScanForSecondDisc scan,
                  std::unique_ptr<BootSessionData> boot_session_data = nullptr);
   void StartGame(const std::vector<std::string>& paths,
                  std::unique_ptr<BootSessionData> boot_session_data = nullptr);
+  */
   void StartGame(std::unique_ptr<BootParameters>&& parameters);
   void ShowRenderWidget();
   void HideRenderWidget(bool reinit = true, bool is_exit = false);
@@ -231,7 +250,8 @@ private:
   bool m_rendering_to_main;
   bool m_stop_confirm_showing = false;
   bool m_stop_requested = false;
-  bool m_exit_requested = false;
+  // RTC_Hijack: moved to public
+  //bool m_exit_requested = false;
   bool m_fullscreen_requested = false;
   bool m_is_screensaver_inhibited = false;
   u32 m_state_slot = 1;

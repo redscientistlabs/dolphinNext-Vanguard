@@ -23,6 +23,8 @@
 #include "VideoCommon/Assets/CustomTextureData.h"
 #include "VideoCommon/TextureConfig.h"
 
+#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
+
 namespace OSD
 {
 constexpr float LEFT_MARGIN = 10.0f;         // Pixels to the left of OSD messages.
@@ -133,6 +135,10 @@ static float DrawMessage(int index, Message& msg, const ImVec2& position, int ti
 void AddTypedMessage(MessageType type, std::string message, u32 ms, u32 argb,
                      const VideoCommon::CustomTextureData::ArraySlice::Level* icon)
 {
+  // RTC_Hijack: call Vanguard function
+  if (!CallImportedFunction<bool>((char*)"RTCOSDENABLED"))  
+    return;
+
   std::lock_guard lock{s_messages_mutex};
 
   // A message may hold a reference to a texture that can only be destroyed on the video thread, so
@@ -148,6 +154,10 @@ void AddTypedMessage(MessageType type, std::string message, u32 ms, u32 argb,
 void AddMessage(std::string message, u32 ms, u32 argb,
                 const VideoCommon::CustomTextureData::ArraySlice::Level* icon)
 {
+  // RTC_Hijack: call Vanguard function
+  if (!CallImportedFunction<bool>((char*)"RTCOSDENABLED"))
+    return;
+
   std::lock_guard lock{s_messages_mutex};
   s_messages.emplace(MessageType::Typeless, Message(std::move(message), ms, argb, std::move(icon)));
 }
