@@ -7,8 +7,8 @@
 #include "Core/State.h"
 #include "Core/ConfigManager.h"
 #include "Core/HW/dsp.h"
-#include "Vanguard/VanguardHelpers.h"
-#include "Vanguard/VanguardClientInitializer.h"
+#include "DolphinQt/Vanguard/VanguardHelpers.h"
+#include "DolphinQt/Vanguard/VanguardClientInitializer.h"
 #include "DolphinQt/MainWindow.h"
 #include <cstddef>
 
@@ -18,9 +18,11 @@ unsigned char Vanguard_peekbyte(long long addr, int selection)
   auto& system = Core::System::GetInstance();
   PowerPC::MMU& m_mmu = system.GetMMU();
   DSP::DSPManager& m_dsp = system.GetDSP();
+  const Core::CPUThreadGuard guard(system);
 
+  // check if we need to use a different function for certain domains
   if (selection == 0)
-    return m_mmu.Read_U8(static_cast<u32>(addr));
+    return m_mmu.HostRead_U8(guard, static_cast<u32>(addr));
   else
     return m_dsp.ReadARAM(static_cast<u32>(addr));
 
@@ -34,9 +36,10 @@ void Vanguard_pokebyte(long long addr, unsigned char val, int selection)
   auto& ppc_State = system.GetPPCState();
   auto& memory = system.GetMemory();
   auto& jit_interface = system.GetJitInterface();
+  const Core::CPUThreadGuard guard(system);
   if (selection == 0)
   {
-    m_mmu.Write_U8(val, static_cast<u32>(addr));
+    m_mmu.HostWrite_U8(guard, val, static_cast<u32>(addr));
     ppc_State.iCache.Invalidate(memory, jit_interface, addr);
     
   }
@@ -44,6 +47,20 @@ void Vanguard_pokebyte(long long addr, unsigned char val, int selection)
   {
     m_dsp.WriteARAM(val, static_cast<u32>(addr));
   }
+}
+
+// pauses the emulator. If we're applying a corruption from cold boot,
+// make sure we don't resume the emulator after loading the game.
+void Vanguard_pause(bool pauseUntilCorrupt)
+{
+  SetState(Core::System::GetInstance(), Core::State::Paused);
+  VanguardClient::pauseUntilCorrupt = pauseUntilCorrupt;
+}
+
+void Vanguard_resume()
+{
+  SetState(Core::System::GetInstance(), Core::State::Running);
+  VanguardClient::pauseUntilCorrupt = false;
 }
 
 void Vanguard_savesavestate(BSTR filename, bool wait)

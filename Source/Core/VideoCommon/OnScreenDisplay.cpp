@@ -23,7 +23,7 @@
 #include "VideoCommon/Assets/CustomTextureData.h"
 #include "VideoCommon/TextureConfig.h"
 
-#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
+#include "DolphinQt/Vanguard/VanguardHelpers.h" // RTC_Hijack
 
 namespace OSD
 {

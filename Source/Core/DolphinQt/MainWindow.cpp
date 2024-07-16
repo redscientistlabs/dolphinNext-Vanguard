@@ -139,8 +139,8 @@
 #include "VideoCommon/NetPlayChatUI.h"
 #include "VideoCommon/VideoConfig.h"
 
-#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
-#include "Vanguard/VanguardClientInitializer.h" // RTC_Hijack
+#include "DolphinQt/Vanguard/VanguardHelpers.h" // RTC_Hijack
+#include "DolphinQt/Vanguard/VanguardClientInitializer.h" // RTC_Hijack
 
 #ifdef HAVE_XRANDR
 #include "UICommon/X11Utils.h"
@@ -844,6 +844,8 @@ void MainWindow::Play(const std::optional<std::string>& savestate_path)
   // Otherwise, play the default game.
   // Otherwise, play the last played game, if there is one.
   // Otherwise, prompt for a new game.
+
+
   if (Core::GetState(Core::System::GetInstance()) == Core::State::Paused)
   {
     Core::SetState(Core::System::GetInstance(), Core::State::Running);

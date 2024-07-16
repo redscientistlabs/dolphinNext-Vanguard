@@ -96,7 +96,7 @@
 #include "VideoCommon/VideoBackendBase.h"
 #include "VideoCommon/VideoEvents.h"
 
-#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
+#include "DolphinQt/Vanguard/VanguardHelpers.h" // RTC_Hijack
 
 namespace Core
 {
@@ -255,9 +255,6 @@ bool Init(Core::System& system, std::unique_ptr<BootParameters> boot, const Wind
   INFO_LOG_FMT(BOOT, "Starting core = {} mode", system.IsWii() ? "Wii" : "GameCube");
   INFO_LOG_FMT(BOOT, "CPU Thread separate = {}", system.IsDualCoreMode() ? "Yes" : "No");
 
-  // RTC_Hijack: Snag the console mode
-  //VanguardClient::IsWii = system.IsWii();
-
   Host_UpdateMainFrame();  // Disable any menus or buttons at boot
 
   // Manually reactivate the video backend in case a GameINI overrides the video backend setting.
@@ -398,13 +395,13 @@ static void CpuThread(Core::System& system, const std::optional<std::string>& sa
       File::Delete(*savestate_path);
   }
 
-  // RTC_Hijack: call Vanguard function
-  CallImportedFunction<void>((char*)"LOADGAMEDONE", SConfig::GetInstance().GetTitleDescription());
-
   // If s_state is Starting, change it to Running. But if it's already been set to Stopping
   // by the host thread, don't change it.
   State expected = State::Starting;
   s_state.compare_exchange_strong(expected, State::Running);
+
+  // RTC_Hijack: call Vanguard function
+  CallImportedFunction<void>((char*)"LOADGAMEDONE", SConfig::GetInstance().GetTitleDescription());
 
   {
 #ifndef _WIN32
@@ -425,7 +422,10 @@ static void CpuThread(Core::System& system, const std::optional<std::string>& sa
       }
       else
       {
-        CPUSetInitialExecutionState();
+        if (VanguardClient::pauseUntilCorrupt)
+          CPUSetInitialExecutionState(true);
+        else
+          CPUSetInitialExecutionState();
       }
     }
   }

@@ -3,7 +3,7 @@
 #include "Core/HW/Memmap.h"
 #include "Core/PowerPC/Jit64Common/Jit64PowerPCState.h"
 #include "Core/State.h"
-#include "Vanguard/VanguardSettingsWrapper.h"
+#include "DolphinQt/Vanguard/VanguardSettingsWrapper.h"
 #include <comdef.h>
 #include <locale>
 #include <codecvt>
@@ -13,6 +13,10 @@
 EXPORT unsigned char Vanguard_peekbyte(long long addr, int selection);
 
 EXPORT void Vanguard_pokebyte(long long addr, unsigned char val, int selection);
+
+EXPORT void Vanguard_pause(bool pauseUntilCorrupt = false);
+
+EXPORT void Vanguard_resume();
 
 EXPORT void Vanguard_savesavestate(BSTR filename, bool wait);
 
@@ -36,12 +40,12 @@ class VanguardClient
 {
 public:
   static bool loading;
-  //static bool IsWii;
+  inline static bool pauseUntilCorrupt;
 };
 
 inline HINSTANCE vanguard = LoadLibraryA("../RTCV/VanguardHook.dll");
 /* CallImportedFunction -- calls a function that has been exported from the Vanguard */
-/*                        client to be accessed by the emulator                      */
+/*                         client to be accessed by the emulator                     */
 /*                                                                                   */
 /* arguments:                                                                        */
 /* const char* function name -- the name of the `DllExport`ed Vanguard function      */

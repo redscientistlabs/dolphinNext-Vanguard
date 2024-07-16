@@ -68,7 +68,7 @@ IPC_HLE_PERIOD: For the Wii Remote this is the call schedule:
 #include "VideoCommon/Fifo.h"
 #include "VideoCommon/PerformanceMetrics.h"
 
-#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
+#include "DolphinQt/Vanguard/VanguardHelpers.h" // RTC_Hijack
 
 namespace SystemTimers
 {

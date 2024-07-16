@@ -1,4 +1,4 @@
-#include "Vanguard/VanguardSettingsWrapper.h"
+#include "DolphinQt/Vanguard/VanguardSettingsWrapper.h"
 
 #include "Core/Config/GraphicsSettings.h"
 #include "Core/Config/MainSettings.h"

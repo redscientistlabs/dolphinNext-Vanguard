@@ -90,10 +90,12 @@ public:
     Yes,
     No,
   };
+
   void StartGame(const std::string& path, ScanForSecondDisc scan,
                  std::unique_ptr<BootSessionData> boot_session_data = nullptr);
   void StartGame(const std::vector<std::string>& paths,
                  std::unique_ptr<BootSessionData> boot_session_data = nullptr);
+  // RTC_Hijack end
 
 signals:
   void ReadOnlyModeChanged(bool read_only);

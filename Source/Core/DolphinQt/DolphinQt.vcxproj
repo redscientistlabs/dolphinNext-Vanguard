@@ -48,12 +48,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Vanguard\VanguardHelpers.cpp">
-      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</TreatWarningAsError>
-    </ClCompile>
-    <ClCompile Include="..\Vanguard\VanguardSettings.cpp">
-      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</TreatWarningAsError>
-    </ClCompile>
     <ClCompile Include="AboutDialog.cpp" />
     <ClCompile Include="CheatSearchFactoryWidget.cpp" />
     <ClCompile Include="CheatSearchWidget.cpp" />
@@ -240,6 +234,8 @@
     <ClCompile Include="ToolBar.cpp" />
     <ClCompile Include="Translation.cpp" />
     <ClCompile Include="Updater.cpp" />
+    <ClCompile Include="Vanguard\VanguardHelpers.cpp" />
+    <ClCompile Include="Vanguard\VanguardSettings.cpp" />
     <ClCompile Include="WiiUpdate.cpp" />
   </ItemGroup>
   <!--
@@ -248,9 +244,6 @@
     also be modified using the VS UI.
     -->
   <ItemGroup>
-    <ClInclude Include="..\Vanguard\VanguardClientInitializer.h" />
-    <ClInclude Include="..\Vanguard\VanguardHelpers.h" />
-    <ClInclude Include="..\Vanguard\VanguardSettingsWrapper.h" />
     <ClInclude Include="Config\CheatCodeEditor.h" />
     <ClInclude Include="Config\GameConfigEdit.h" />
     <ClInclude Include="Config\Mapping\MappingCommon.h" />
@@ -276,6 +269,9 @@
     <ClInclude Include="TAS\TASControlState.h" />
     <ClInclude Include="TAS\TASSlider.h" />
     <ClInclude Include="Translation.h" />
+    <ClInclude Include="Vanguard\VanguardClientInitializer.h" />
+    <ClInclude Include="Vanguard\VanguardHelpers.h" />
+    <ClInclude Include="Vanguard\VanguardSettingsWrapper.h" />
     <ClInclude Include="WiiUpdate.h" />
     <QtMoc Include="AboutDialog.h" />
     <QtMoc Include="CheatSearchFactoryWidget.h" />
@@ -500,6 +496,9 @@
     <DataTxtFiles Include="$(DolphinRootDir)Data\license.txt" />
     <BinaryFiles Include="$(TargetPath)" />
     <AllInputFiles Include="@(DataSysFiles);@(DataTxtFiles);@(BinaryFiles)" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Vanguard\VanguardSpec.json" />
   </ItemGroup>
   <Target Name="AfterBuild" Inputs="@(AllInputFiles)" Outputs="@(AllInputFiles -> '$(BinaryOutputDir)%(RecursiveDir)%(Filename)%(Extension)')">
     <Message Text="Copying Data directory..." Importance="High" />

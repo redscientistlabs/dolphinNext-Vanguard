@@ -43,7 +43,7 @@
 #include "UICommon/CommandLineParse.h"
 #include "UICommon/UICommon.h"
 
-#include "Vanguard/VanguardHelpers.h" // RTC_Hijack
+#include "DolphinQt/Vanguard/VanguardHelpers.h" // RTC_Hijack
 
 static bool QtMsgAlertHandler(const char* caption, const char* text, bool yes_no,
                               Common::MsgType style)
