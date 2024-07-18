@@ -137,17 +137,6 @@ bool Vanguard_isWii()
   return Core::System::GetInstance().IsWii();
 }
 
-VanguardSettingsWrapper Vanguard_GetVanguardSettingsFromDolphin()
-{
-  return VanguardSettings::GetSettingsFromDolphin();
-}
-
-VanguardSettingsUnmanaged
-Vanguard_GetVanguardSettingFromVanguardSettingsWrapper(VanguardSettingsWrapper vSettings)
-{
-  return VanguardSettings::GetSettingsFromSettingsWrapper(vSettings);
-}
-
 std::string getDirectory()
 {
   char buffer[MAX_PATH] = {0};

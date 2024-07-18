@@ -3,7 +3,6 @@
 #include "Core/HW/Memmap.h"
 #include "Core/PowerPC/Jit64Common/Jit64PowerPCState.h"
 #include "Core/State.h"
-#include "DolphinQt/Vanguard/VanguardSettingsWrapper.h"
 #include <comdef.h>
 #include <locale>
 #include <codecvt>
@@ -32,10 +31,6 @@ EXPORT void Vanguard_forceStop();
 
 EXPORT bool Vanguard_isWii();
 
-EXPORT VanguardSettingsWrapper Vanguard_GetVanguardSettingsFromDolphin();
-
-EXPORT VanguardSettingsUnmanaged Vanguard_GetVanguardSettingFromVanguardSettingsWrapper(VanguardSettingsWrapper vSettings);
-
 class VanguardClient
 {
 public:
@@ -44,6 +39,7 @@ public:
 };
 
 inline HINSTANCE vanguard = LoadLibraryA("../RTCV/VanguardHook.dll");
+inline DWORD error;
 /* CallImportedFunction -- calls a function that has been exported from the Vanguard */
 /*                         client to be accessed by the emulator                     */
 /*                                                                                   */
@@ -73,13 +69,11 @@ T CallImportedFunction(char* function_name, std::string string = "")
     typedef T (*FUNC)(BSTR);
     FUNC function = (FUNC)GetProcAddress(vanguard, function_name);
     if (!function)
-      DWORD error = GetLastError();
-    else
-    {
-      // make sure to free the BSTR from memory once we're done with it
-      SysFreeString(converted_string);
-      return function(converted_string);
-    }
+      error = GetLastError();
+
+    // make sure to free the BSTR from memory once we're done with it
+    SysFreeString(converted_string);
+    return function(converted_string);
   }
   else
   {
@@ -87,13 +81,11 @@ T CallImportedFunction(char* function_name, std::string string = "")
     typedef T (*FUNC)();
     FUNC function = (FUNC)GetProcAddress(vanguard, function_name);
     if (!function)
-      DWORD error = GetLastError();
-    else
-    {
-      // make sure to free the BSTR from memory once we're done with it
-      SysFreeString(converted_string);
-      return function();
-    }
+      error = GetLastError();
+
+    // make sure to free the BSTR from memory once we're done with it
+    SysFreeString(converted_string);
+    return function();
   }
 }
 
