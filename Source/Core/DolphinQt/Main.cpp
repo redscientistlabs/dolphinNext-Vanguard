@@ -258,6 +258,12 @@ int main(int argc, char* argv[])
     std::string emuDir = getDirectory();
     CallImportedFunction<void>((char*)"InitVanguard", emuDir);
 
+    for (int i = 0; i < argc; i++)
+    {
+      if ((std::string)argv[i] == "-CONSOLE")
+        CallImportedFunction<void>((char*)"SHOWCONSOLE");
+    }
+
 #if defined(USE_ANALYTICS) && USE_ANALYTICS
     if (!Config::Get(Config::MAIN_ANALYTICS_PERMISSION_ASKED))
     {
