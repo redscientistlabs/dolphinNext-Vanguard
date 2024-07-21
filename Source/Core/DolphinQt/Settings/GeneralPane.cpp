@@ -226,17 +226,23 @@ void GeneralPane::CreateFallbackRegion()
 #if defined(USE_ANALYTICS) && USE_ANALYTICS
 void GeneralPane::CreateAnalytics()
 {
+  // RTC_Hijack: nuke analytics
+  /*
   auto* analytics_group = new QGroupBox(tr("Usage Statistics Reporting Settings"));
   auto* analytics_group_layout = new QVBoxLayout;
+
   analytics_group->setLayout(analytics_group_layout);
   m_main_layout->addWidget(analytics_group);
-
+  */
   m_checkbox_enable_analytics = new QCheckBox(tr("Enable Usage Statistics Reporting"));
   m_button_generate_new_identity =
       new NonDefaultQPushButton(tr("Generate a New Statistics Identity"));
+  // RTC_Hijack: nuke analytics
+  /*
   analytics_group_layout->addWidget(m_checkbox_enable_analytics);
   analytics_group_layout->addWidget(m_button_generate_new_identity);
-}
+  */
+  }
 #endif
 
 void GeneralPane::LoadConfig()

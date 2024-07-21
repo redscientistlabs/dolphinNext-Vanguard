@@ -85,7 +85,8 @@ void DolphinAnalytics::ReloadConfig()
   m_unique_id = Config::Get(Config::MAIN_ANALYTICS_ID);
   if (m_unique_id.empty())
   {
-    GenerateNewIdentity();
+    // RTC_Hijack: nuke analytics
+    //GenerateNewIdentity();
   }
 }
 

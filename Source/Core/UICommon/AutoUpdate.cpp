@@ -136,11 +136,15 @@ std::string GenerateChangelog(const picojson::array& versions)
 
 bool AutoUpdateChecker::SystemSupportsAutoUpdates()
 {
+// RTC_Hijack: nuke auto update
+/*
 #if defined(AUTOUPDATE) && defined(OS_SUPPORTS_UPDATER)
   return true;
 #else
   return false;
 #endif
+*/
+return false;
 }
 
 static std::string GetPlatformID()

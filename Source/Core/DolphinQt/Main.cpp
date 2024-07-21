@@ -264,7 +264,10 @@ int main(int argc, char* argv[])
         CallImportedFunction<void>((char*)"SHOWCONSOLE");
     }
 
+// RTC_Hijack: nuke analytics
+/*
 #if defined(USE_ANALYTICS) && USE_ANALYTICS
+
     if (!Config::Get(Config::MAIN_ANALYTICS_PERMISSION_ASKED))
     {
       ModalMessageBox analytics_prompt(&win);
@@ -294,6 +297,7 @@ int main(int argc, char* argv[])
       DolphinAnalytics::Instance().ReloadConfig();
     }
 #endif
+*/
 
     if (!Settings::Instance().IsBatchModeEnabled())
     {
