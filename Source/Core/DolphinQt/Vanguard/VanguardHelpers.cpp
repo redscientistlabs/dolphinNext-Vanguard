@@ -6,7 +6,6 @@
 #include "Core/HW/dsp.h"
 #include "Core/State.h"
 #include "Core/ConfigManager.h"
-#include "Core/HW/dsp.h"
 #include "DolphinQt/Vanguard/VanguardHelpers.h"
 #include "DolphinQt/Vanguard/VanguardClientInitializer.h"
 #include "DolphinQt/MainWindow.h"
@@ -16,36 +15,39 @@
 unsigned char Vanguard_peekbyte(long long addr, int selection)
 {
   auto& system = Core::System::GetInstance();
-  PowerPC::MMU& m_mmu = system.GetMMU();
+  Memory::MemoryManager& memory = system.GetMemory();
   DSP::DSPManager& m_dsp = system.GetDSP();
-  const Core::CPUThreadGuard guard(system);
 
   // check if we need to use a different function for certain domains
-  if (selection == 0)
-    return m_mmu.HostRead_U8(guard, static_cast<u32>(addr));
-  else
+  switch (selection)
+  {
+  case 0:
+    return memory.Read_U8(static_cast<u32>(addr));
+    break;
+  case 1:
     return m_dsp.ReadARAM(static_cast<u32>(addr));
-
+    break;
+  }
+  return 0;
 }
 
 void Vanguard_pokebyte(long long addr, unsigned char val, int selection)
 {
   auto& system = Core::System::GetInstance();
-  auto& m_mmu = system.GetMMU();
+  auto& memory = system.GetMemory();
   auto& m_dsp = system.GetDSP();
   auto& ppc_State = system.GetPPCState();
-  auto& memory = system.GetMemory();
   auto& jit_interface = system.GetJitInterface();
-  const Core::CPUThreadGuard guard(system);
-  if (selection == 0)
+
+  switch (selection)
   {
-    m_mmu.HostWrite_U8(guard, val, static_cast<u32>(addr));
+  case 0:
+    memory.Write_U8(val, static_cast<u32>(addr));
     ppc_State.iCache.Invalidate(memory, jit_interface, addr);
-    
-  }
-  else
-  {
+    break;
+  case 1:
     m_dsp.WriteARAM(val, static_cast<u32>(addr));
+    break;
   }
 }
 
