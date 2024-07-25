@@ -507,8 +507,11 @@ static void EmuThread(Core::System& system, std::unique_ptr<BootParameters> boot
 
   // RTC_Hijack: Snag the boot path
   std::string romPath = "";
-  if (std::holds_alternative<BootParameters::Disc>(boot->parameters))
+  if (std::holds_alternative<BootParameters::Disc>(boot->parameters) &&
+      typeid(boot->parameters).name() != typeid(DiscIO::VolumeWAD).name())
     romPath = std::get<BootParameters::Disc>(boot->parameters).path;
+  else
+    romPath = "EMPTY";
 
   // RTC_Hijack: call Vanguard function
   CallImportedFunction<void>((char*)"LOADGAMESTART", romPath);
