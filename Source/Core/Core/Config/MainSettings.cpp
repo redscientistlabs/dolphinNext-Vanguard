@@ -396,7 +396,8 @@ const Info<bool> MAIN_ABORT_ON_PANIC_ALERT{{System::Main, "Interface", "AbortOnP
 // RTC_Hijack: default on screen display messages to false
 const Info<bool> MAIN_OSD_MESSAGES{{System::Main, "Interface", "OnScreenDisplayMessages"}, false};
 const Info<bool> MAIN_SKIP_NKIT_WARNING{{System::Main, "Interface", "SkipNKitWarning"}, false};
-const Info<bool> MAIN_CONFIRM_ON_STOP{{System::Main, "Interface", "ConfirmStop"}, true};
+// RTC_Hijack: default confirm on stop to false
+const Info<bool> MAIN_CONFIRM_ON_STOP{{System::Main, "Interface", "ConfirmStop"}, false};
 const Info<ShowCursor> MAIN_SHOW_CURSOR{{System::Main, "Interface", "CursorVisibility"},
                                         ShowCursor::OnMovement};
 const Info<bool> MAIN_LOCK_CURSOR{{System::Main, "Interface", "LockCursor"}, false};
