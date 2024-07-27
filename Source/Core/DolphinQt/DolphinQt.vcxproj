@@ -44,8 +44,11 @@
       <AdditionalManifestFiles>DolphinQt.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
     <Link>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">xcopy /y $(ProjectDir)Vanguard\VanguardSpec.json $(BinaryOutputDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AboutDialog.cpp" />

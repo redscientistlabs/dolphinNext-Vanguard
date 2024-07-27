@@ -2,14 +2,12 @@
 #include "Core/System.h"
 #include "Core/HW/Memmap.h"
 #include "Core/PowerPC/Jit64Common/Jit64PowerPCState.h"
+#include "Core/State.h"
 #include "Core/PowerPC/MMU.h"
 #include "Core/HW/dsp.h"
-#include "Core/State.h"
-#include "Core/ConfigManager.h"
 #include "DolphinQt/Vanguard/VanguardHelpers.h"
 #include "DolphinQt/Vanguard/VanguardClientInitializer.h"
-#include "DolphinQt/MainWindow.h"
-#include <cstddef>
+#include <codecvt>
 
 
 unsigned char Vanguard_peekbyte(long long addr, int selection)
@@ -18,7 +16,8 @@ unsigned char Vanguard_peekbyte(long long addr, int selection)
   Memory::MemoryManager& memory = system.GetMemory();
   DSP::DSPManager& m_dsp = system.GetDSP();
 
-  // check if we need to use a different function for certain domains
+  // choose the correct read function based on what memory domain is requesting it
+  // this is chosen from the config file
   switch (selection)
   {
   case 0:

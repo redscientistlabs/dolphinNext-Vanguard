@@ -422,6 +422,8 @@ static void CpuThread(Core::System& system, const std::optional<std::string>& sa
       }
       else
       {
+        // RTC Hijack: if we're cold booting a game and also loading a savestate, make sure to force the emulator
+        // to load the game in a paused state
         if (VanguardClient::pauseUntilCorrupt)
           CPUSetInitialExecutionState(true);
         else
@@ -506,10 +508,13 @@ static void EmuThread(Core::System& system, std::unique_ptr<BootParameters> boot
   DeclareAsGPUThread();
 
   // RTC_Hijack: Snag the boot path
+  // THIS IS EMULATOR SPECIFIC
   std::string romPath = "";
   if (std::holds_alternative<BootParameters::Disc>(boot->parameters) &&
       typeid(boot->parameters).name() != typeid(DiscIO::VolumeWAD).name())
     romPath = std::get<BootParameters::Disc>(boot->parameters).path;
+  // we need to put something in the string if we don't find the game, otherwise it'll send
+  // garbage to the hook
   else
     romPath = "EMPTY";
 

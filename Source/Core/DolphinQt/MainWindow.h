@@ -83,8 +83,9 @@ public:
   bool eventFilter(QObject* object, QEvent* event) override;
   QMenu* createPopupMenu() override;
   void ForceStopVanguard();  // RTC_Hijack
-  bool m_exit_requested = false; // RTC_Hijack: moved from private
-  // RTC_Hijack: moved from private
+  // RTC_Hijack: moved following from private
+  bool m_exit_requested = false;
+
   enum class ScanForSecondDisc
   {
     Yes,

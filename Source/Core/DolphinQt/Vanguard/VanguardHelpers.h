@@ -1,11 +1,5 @@
 #pragma once
-//#pragma comment(lib, "comsupp.lib")
-#include "Core/HW/Memmap.h"
-#include "Core/PowerPC/Jit64Common/Jit64PowerPCState.h"
-#include "Core/State.h"
 #include <comdef.h>
-#include <locale>
-#include <codecvt>
 
 #define EXPORT extern "C" __declspec(dllexport)
 

@@ -11,7 +11,8 @@
     "SUPPORTS_REALTIME": true,
     "SUPPORTS_SAVESTATES": true,
     "SUPPORTS_REFERENCES": true,
-    "SUPPORTS_MIXED_STOCKPILE": true
+    "SUPPORTS_MIXED_STOCKPILE": true,
+    "CORE_DISKBASED": false
   },
   "MemoryDomainConfig": [
     {
@@ -21,7 +22,7 @@
         "Gamecube"
       ],
       "BigEndian": true,
-      "Size": "0x017FFFFF",
+      "Size": "0x01800000",
       "WordSize": 4,
       "Offset": "0xC0000000",
       "PeekPokeSel": 0
@@ -32,7 +33,7 @@
         "Wii"
       ],
       "BigEndian": true,
-      "Size": "0x03FFFFFF",
+      "Size": "0x04000000",
       "WordSize": 4,
       "Offset": "0xD0000000",
       "PeekPokeSel": 0
@@ -43,7 +44,7 @@
         "Gamecube"
       ],
       "BigEndian": true,
-      "Size": "0x03FFFFFF",
+      "Size": "0x04000000",
       "WordSize": 4,
       "Offset": "0x90000000",
       "PeekPokeSel": 1
