@@ -499,7 +499,8 @@
     <AllInputFiles Include="@(DataSysFiles);@(DataTxtFiles);@(BinaryFiles)" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Vanguard\VanguardSpec.json" />
+    <None Include="Vanguard\VanguardBlacklistedDomains.json" />
+    <None Include="Vanguard\VanguardConfig.json" />
   </ItemGroup>
   <Target Name="AfterBuild" Inputs="@(AllInputFiles)" Outputs="@(AllInputFiles -> '$(BinaryOutputDir)%(RecursiveDir)%(Filename)%(Extension)')">
     <Message Text="Copying Data directory..." Importance="High" />
