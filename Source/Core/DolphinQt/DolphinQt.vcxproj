@@ -47,7 +47,8 @@
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">xcopy /y $(ProjectDir)Vanguard\VanguardSpec.json $(BinaryOutputDir)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">xcopy /y $(ProjectDir)Vanguard\VanguardConfig.json $(BinaryOutputDir)
+xcopy /y $(ProjectDir)Vanguard\VanguardBlacklistedDomains.json $(BinaryOutputDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
