@@ -451,6 +451,8 @@ static void CpuThread(Core::System& system, const std::optional<std::string>& sa
     INFO_LOG_FMT(GDB_STUB, "Killed by CPU shutdown");
     return;
   }
+
+  VanguardClient::system_core = "EMPTY";
 }
 
 static void FifoPlayerThread(Core::System& system, const std::optional<std::string>& savestate_path,
@@ -563,6 +565,9 @@ static void EmuThread(Core::System& system, std::unique_ptr<BootParameters> boot
       }
     }
   }};
+
+  // RTC_Hijack
+  VanguardClient::system_core = (system.IsWii()) ? "Wii" : "Gamecube";
 
   // Load Wiimotes - only if we are booting in Wii mode
   if (system.IsWii() && !Config::Get(Config::MAIN_BLUETOOTH_PASSTHROUGH_ENABLED))

@@ -23,6 +23,8 @@ EXPORT void Vanguard_prepShutdown();
 
 EXPORT void Vanguard_forceStop();
 
+EXPORT char* Vanguard_getSystemCore();
+
 EXPORT bool Vanguard_isWii();
 
 class VanguardClient
@@ -30,6 +32,7 @@ class VanguardClient
 public:
   static bool loading;
   inline static bool pauseUntilCorrupt;
+  static std::string system_core;
 };
 
 inline HINSTANCE vanguard = LoadLibraryA("../RTCV/VanguardHook.dll");

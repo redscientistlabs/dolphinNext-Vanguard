@@ -24,7 +24,7 @@
       "BigEndian": true,
       "Size": "0x01800000",
       "WordSize": 4,
-      "Offset": "0xC0000000",
+      "Offset": "0x80000000",
       "PeekPokeSel": 0
     },
     {
@@ -35,7 +35,7 @@
       "BigEndian": true,
       "Size": "0x04000000",
       "WordSize": 4,
-      "Offset": "0xD0000000",
+      "Offset": "0x90000000",
       "PeekPokeSel": 0
     },
     {
