@@ -154,17 +154,14 @@ void AddTypedMessage(MessageType type, std::string message, u32 ms, u32 argb,
 void AddMessage(std::string message, u32 ms, u32 argb,
                 const VideoCommon::CustomTextureData::ArraySlice::Level* icon)
 {
-  // RTC_Hijack: call Vanguard function
-  if (!CallImportedFunction<bool>((char*)"RTCOSDENABLED"))
-    return;
-
   std::lock_guard lock{s_messages_mutex};
   s_messages.emplace(MessageType::Typeless, Message(std::move(message), ms, argb, std::move(icon)));
 }
 
 void DrawMessages()
 {
-  const bool draw_messages = Config::Get(Config::MAIN_OSD_MESSAGES);
+  const bool draw_messages = Config::Get(Config::MAIN_OSD_MESSAGES) &&
+                             !CallImportedFunction<bool>((char*)"RTCOSDENABLED"); // RTC_Hijack: check RTC if OSD should be enabled
   const float current_x =
       LEFT_MARGIN * ImGui::GetIO().DisplayFramebufferScale.x + s_obscured_pixels_left;
   float current_y = TOP_MARGIN * ImGui::GetIO().DisplayFramebufferScale.y + s_obscured_pixels_top;
