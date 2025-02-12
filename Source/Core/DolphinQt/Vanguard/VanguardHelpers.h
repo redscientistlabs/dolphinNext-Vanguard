@@ -25,6 +25,10 @@ EXPORT void Vanguard_forceStop();
 
 EXPORT char* Vanguard_getSystemCore();
 
+EXPORT char* Vanguard_saveEmuSettings();
+
+EXPORT void Vanguard_loadEmuSettings(BSTR settings);
+
 EXPORT bool Vanguard_isWii();
 
 class VanguardClient
@@ -33,6 +37,7 @@ public:
   static bool loading;
   inline static bool pauseUntilCorrupt;
   static std::string system_core;
+  static std::string test;
 };
 
 inline HINSTANCE vanguard = LoadLibraryA("../RTCV/VanguardHook.dll");

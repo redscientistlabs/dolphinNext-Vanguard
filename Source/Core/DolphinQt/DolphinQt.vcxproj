@@ -239,6 +239,7 @@ xcopy /y $(ProjectDir)Vanguard\VanguardBlacklistedDomains.json $(BinaryOutputDir
     <ClCompile Include="Translation.cpp" />
     <ClCompile Include="Updater.cpp" />
     <ClCompile Include="Vanguard\VanguardHelpers.cpp" />
+    <ClCompile Include="Vanguard\VanguardJsonParser.cpp" />
     <ClCompile Include="WiiUpdate.cpp" />
   </ItemGroup>
   <!--
@@ -273,7 +274,9 @@ xcopy /y $(ProjectDir)Vanguard\VanguardBlacklistedDomains.json $(BinaryOutputDir
     <ClInclude Include="TAS\TASSlider.h" />
     <ClInclude Include="Translation.h" />
     <ClInclude Include="Vanguard\VanguardClientInitializer.h" />
+    <ClInclude Include="Vanguard\VanguardEmuSettings.h" />
     <ClInclude Include="Vanguard\VanguardHelpers.h" />
+    <ClInclude Include="Vanguard\VanguardJsonParser.h" />
     <ClInclude Include="WiiUpdate.h" />
     <QtMoc Include="AboutDialog.h" />
     <QtMoc Include="CheatSearchFactoryWidget.h" />

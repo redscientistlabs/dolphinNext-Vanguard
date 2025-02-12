@@ -7,8 +7,13 @@
 #include "Core/HW/dsp.h"
 #include "DolphinQt/Vanguard/VanguardHelpers.h"
 #include "DolphinQt/Vanguard/VanguardClientInitializer.h"
+#include "DolphinQt/Vanguard/VanguardJsonParser.h"
+#include "DolphinQt/Vanguard/VanguardEmuSettings.h"
+#include "Core/Config/MainSettings.h"
 #include <codecvt>
+#include <iostream>
 
+void FormatJsonData(VanguardSettings& settings, std::ostringstream& json_string);
 
 unsigned char Vanguard_peekbyte(long long addr, int selection)
 {
@@ -129,6 +134,34 @@ char* Vanguard_getSystemCore()
   return VanguardClient::system_core.data();
 }
 
+// Saves all required emulator settings and returns it to the hook DLL to store with the savestate
+char* Vanguard_saveEmuSettings()
+{
+  // create a new settings class and store all values
+  VanguardSettings _settings;
+  _settings.SaveSettings();
+
+  // write the json data to a stringstream
+  std::ostringstream out;
+  FormatJsonData(_settings, out);
+
+  // store the output as a string, then convert it to char*
+  std::string tmp = out.str();
+  std::vector<char> output(tmp.begin(), tmp.end());
+  //output.push_back('\0');
+
+  return &output[0];
+}
+
+// Loads all required emulator settings sent by the hook DLL before loading the savestate
+void Vanguard_loadEmuSettings(BSTR settings)
+{
+  JsonParser::JsonValue parsed_settings = JsonParser::ParseJson(settings);
+
+  VanguardSettings _settings;
+  _settings.LoadSettings(parsed_settings);
+}
+
 //converts a BSTR received from the Vanguard client to std::string
 std::string BSTRToString(BSTR string)
 {
@@ -150,4 +183,40 @@ std::string getDirectory()
   GetModuleFileNameA(NULL, buffer, MAX_PATH);
   std::string::size_type pos = std::string(buffer).find_last_of("\\/");
   return std::string(buffer).substr(0, pos);
+}
+
+// formats the saved settings into a JSON format
+void FormatJsonData(VanguardSettings& settings, std::ostringstream& json_string)
+{
+  // beginning of json string
+  json_string << "{\n";
+
+  // iterate through all settings
+  for (int i = 0; i < settings.array.size(); i++)
+  {
+    json_string << "  \"" << settings.array[i].first
+                << "\": " << settings.to_string(settings.array[i].second);
+
+    // can probably do something better than this to check if the value is a float
+    try
+    {
+      // if the value is a whole number float, add ".0" so the parser understands
+      if (floor(std::get<float>(settings.array[i].second)) ==
+          std::get<float>(settings.array[i].second))
+        json_string << ".0";
+    }
+    catch (std::bad_variant_access const& ex)
+    {
+      std::cout << ex.what(); // just needed to put something here so it doesn't throw a warning
+    }
+
+    // only add a comma if there are more values to be parsed
+    if (i + 1 < settings.array.size())
+      json_string << ",\n";
+    else
+      json_string << "\n";
+  }
+
+  // end of json string
+  json_string << "}";
 }
