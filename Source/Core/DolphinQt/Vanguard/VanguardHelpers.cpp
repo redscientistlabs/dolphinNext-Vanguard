@@ -131,7 +131,19 @@ void Vanguard_forceStop()
 std::string VanguardClient::system_core = "EMPTY";
 char* Vanguard_getSystemCore()
 {
-  return VanguardClient::system_core.data();
+  // store the output as a string, then convert it to char*
+  std::string tmp = VanguardClient::system_core;
+
+  std::vector<char> _output(tmp.begin(), tmp.end());
+  _output.push_back('\0');
+
+  char* output = (char*)LocalAlloc(LMEM_FIXED, _output.size() + 1);
+  if (!output)
+    return NULL;
+
+  memcpy(output, _output.data(), _output.size() + 1);
+
+  return output;
 }
 
 // Saves all required emulator settings and returns it to the hook DLL to store with the savestate
@@ -175,12 +187,6 @@ std::string BSTRToString(BSTR string)
   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
   std::string converted_string = converter.to_bytes(ws);
   return converted_string;
-}
-
-//bool VanguardClient::IsWii = false;
-bool Vanguard_isWii()
-{
-  return Core::System::GetInstance().IsWii();
 }
 
 std::string getDirectory()

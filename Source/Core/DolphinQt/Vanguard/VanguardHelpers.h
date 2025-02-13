@@ -29,8 +29,6 @@ EXPORT char* Vanguard_saveEmuSettings();
 
 EXPORT void Vanguard_loadEmuSettings(BSTR settings);
 
-EXPORT bool Vanguard_isWii();
-
 class VanguardClient
 {
 public:
