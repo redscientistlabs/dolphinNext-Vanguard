@@ -147,10 +147,16 @@ char* Vanguard_saveEmuSettings()
 
   // store the output as a string, then convert it to char*
   std::string tmp = out.str();
-  std::vector<char> output(tmp.begin(), tmp.end());
-  //output.push_back('\0');
 
-  return &output[0];
+  std::vector<char> _output(tmp.begin(), tmp.end());
+  _output.push_back('\0');
+
+  char* output = (char*) LocalAlloc(LMEM_FIXED, _output.size() + 1);
+  if (!output)
+    return NULL;
+
+  memcpy(output, _output.data(), _output.size() + 1);
+  return output;
 }
 
 // Loads all required emulator settings sent by the hook DLL before loading the savestate
