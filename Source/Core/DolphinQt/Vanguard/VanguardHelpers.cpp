@@ -209,17 +209,10 @@ void FormatJsonData(VanguardSettings& settings, std::ostringstream& json_string)
     json_string << "  \"" << settings.array[i].first
                 << "\": " << settings.to_string(settings.array[i].second);
 
-    // can probably do something better than this to check if the value is a float
-    try
+    // if the value is a whole number float, add ".0" so the parser understands
+    if (typeid(settings.array[i].second) == typeid(float))
     {
-      // if the value is a whole number float, add ".0" so the parser understands
-      if (floor(std::get<float>(settings.array[i].second)) ==
-          std::get<float>(settings.array[i].second))
-        json_string << ".0";
-    }
-    catch (std::bad_variant_access const& ex)
-    {
-      std::cout << ex.what(); // just needed to put something here so it doesn't throw a warning
+      json_string << ".0";
     }
 
     // only add a comma if there are more values to be parsed
