@@ -8,7 +8,6 @@
 #include "DolphinQt/Vanguard/VanguardJsonParser.h"
 #include "DolphinQt/Vanguard/VanguardHelpers.h"
 #include <sstream>
-#include <cassert>
 #include <algorithm>
 
 using namespace JsonParser;
@@ -66,7 +65,8 @@ JsonValue JsonParser::ParsePrimitive(const std::string& text, text_it start, tex
 std::pair<std::string, JsonValue> JsonParser::RetriveKeyValuePair(const std::string& text,
                                                                   text_it& it)
 {
-  assert(it != text.end());
+  if (it == text.end())
+    throw std::invalid_argument("string is empty");
 
   // ignore white spaces & line breaks
   while (*it == ' ' || *it == '\n')
@@ -87,7 +87,10 @@ std::pair<std::string, JsonValue> JsonParser::RetriveKeyValuePair(const std::str
     }
 
     key = text.substr(curr_it - text.begin(), it - curr_it);
-    assert(*(++it) == ':');  // assert that we are parsing the key string
+    if (*(++it) == ':')
+      it++;
+    else
+      throw std::invalid_argument("did not find ':' designating a value to the key");
     it++;
   }
 
@@ -124,7 +127,8 @@ std::pair<std::string, JsonValue> JsonParser::RetriveKeyValuePair(const std::str
 
 JsonValue JsonParser::ParseJsonHelper(const std::string& text, text_it& it)
 {
-  assert(*it == '{');  // must start with the left curly bracket
+  if (*it != '{')  // must start with the left curly bracket
+    throw std::invalid_argument("string does not start with '{'");
   it++;
 
   std::map<std::string, JsonValue>* json_map = new std::map<std::string, JsonValue>;
