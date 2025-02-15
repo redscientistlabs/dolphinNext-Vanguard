@@ -46,19 +46,21 @@ AudioPane::AudioPane()
 
 void AudioPane::CreateWidgets()
 {
-  auto* dsp_box = new QGroupBox(tr("DSP Emulation Engine"));
+  // RTC_Hijack: disable DSP configuration for corruption determinism
+  auto* dsp_box = new QGroupBox(tr("DSP Configuration Disabled for Corruption Determinism"));
+  //auto* dsp_box = new QGroupBox(tr("DSP Emulation Engine"));
   auto* dsp_layout = new QVBoxLayout;
 
   dsp_box->setLayout(dsp_layout);
   m_dsp_hle = new QRadioButton(tr("DSP HLE (recommended)"));
   m_dsp_lle = new QRadioButton(tr("DSP LLE Recompiler (slow)"));
   m_dsp_interpreter = new QRadioButton(tr("DSP LLE Interpreter (very slow)"));
-
   dsp_layout->addStretch(1);
-  dsp_layout->addWidget(m_dsp_hle);
-  dsp_layout->addWidget(m_dsp_lle);
-  dsp_layout->addWidget(m_dsp_interpreter);
-  dsp_layout->addStretch(1);
+  //dsp_layout->addWidget(m_dsp_hle);
+  //dsp_layout->addWidget(m_dsp_lle);
+  //dsp_layout->addWidget(m_dsp_interpreter);
+  //dsp_layout->addStretch(1);
+  // End of RTC_Hijack
 
   auto* volume_box = new QGroupBox(tr("Volume"));
   auto* volume_layout = new QVBoxLayout;
