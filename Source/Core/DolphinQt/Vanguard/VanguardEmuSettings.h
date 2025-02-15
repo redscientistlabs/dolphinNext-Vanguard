@@ -218,8 +218,9 @@ public:
     load_setting<float>(VAR_NAME(MAIN_OVERCLOCK), (*settings.json)[VAR_NAME(MAIN_OVERCLOCK)],
                         Config::MAIN_OVERCLOCK);
 
-    load_setting<bool>(VAR_NAME(MAIN_WII_SD_CARD), (*settings.json)[VAR_NAME(MAIN_WII_SD_CARD)],
-                       Config::MAIN_WII_SD_CARD);
+    load_setting<bool>(VAR_NAME(MAIN_ALLOW_SD_WRITES),
+                       (*settings.json)[VAR_NAME(MAIN_ALLOW_SD_WRITES)],
+                       Config::MAIN_ALLOW_SD_WRITES);
 
     load_setting<bool>(VAR_NAME(MAIN_FPRF), (*settings.json)[VAR_NAME(MAIN_FPRF)],
                        Config::MAIN_FPRF);
