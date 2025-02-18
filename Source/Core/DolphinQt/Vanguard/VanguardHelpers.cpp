@@ -210,7 +210,7 @@ void FormatJsonData(VanguardSettings& settings, std::ostringstream& json_string)
                 << "\": " << settings.to_string(settings.array[i].second);
 
     // if the value is a whole number float, add ".0" so the parser understands
-    if (typeid(settings.array[i].second) == typeid(float))
+    if (std::holds_alternative<float>(settings.array[i].second))
     {
       json_string << ".0";
     }
